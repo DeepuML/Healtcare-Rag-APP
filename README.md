@@ -1,4 +1,4 @@
-# Healthcare Nutrition RAG Application 🏥
+# Healthcare Nutrition RAG Application
 
 A production-ready Retrieval-Augmented Generation (RAG) system for answering nutrition and healthcare questions using local LLMs and vector embeddings.
 
@@ -7,7 +7,7 @@ A production-ready Retrieval-Augmented Generation (RAG) system for answering nut
 ![Next.js](https://img.shields.io/badge/Next.js-16.1-black.svg)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-green.svg)
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Problem Statement](#problem-statement)
 - [Solution](#solution)
@@ -27,7 +27,7 @@ A production-ready Retrieval-Augmented Generation (RAG) system for answering nut
 
 ---
 
-## 🎯 Problem Statement
+## Problem Statement
 
 Healthcare and nutrition information is vast, complex, and often scattered across multiple sources. Users face several challenges:
 
@@ -37,35 +37,35 @@ Healthcare and nutrition information is vast, complex, and often scattered acros
 - **Accessibility**: Medical jargon makes information hard to understand for general users
 - **Privacy Concerns**: Sending health queries to third-party APIs raises privacy issues
 
-## 💡 Solution
+## Solution
 
 A **locally-hosted RAG system** that combines the power of Large Language Models with vector search to provide accurate, contextual answers with source citations:
 
 ### Key Benefits:
 
-✅ **Privacy-First**: All processing happens locally - no data sent to external APIs  
-✅ **Cited Answers**: Every response includes source page numbers and excerpts  
-✅ **Fast Retrieval**: Vector embeddings enable semantic search in milliseconds  
-✅ **Conversational UI**: ChatGPT-style interface with persistent chat history  
-✅ **Production-Ready**: DVC pipeline for reproducibility and version control  
-✅ **Scalable**: Supports both local vector search and Supabase cloud storage
+**Privacy-First**: All processing happens locally - no data sent to external APIs  
+ **Cited Answers**: Every response includes source page numbers and excerpts  
+ **Fast Retrieval**: Vector embeddings enable semantic search in milliseconds  
+ **Conversational UI**: ChatGPT-style interface with persistent chat history  
+ **Production-Ready**: DVC pipeline for reproducibility and version control  
+ **Scalable**: Supports both local vector search and Supabase cloud storage
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                         User Interface                           │
+│                         User Interface                          │
 │              (Next.js 16 + React + Tailwind CSS)                │
 └───────────────────────────────┬─────────────────────────────────┘
                                 │ HTTP/REST
 ┌───────────────────────────────▼─────────────────────────────────┐
-│                      FastAPI Backend                             │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐         │
-│  │ LocalEmbedder│  │LocalRetriever│  │  LLM Generator│         │
-│  │ (MPNet-v2)   │  │ (Cosine Sim) │  │ (Mistral-7B)  │         │
-│  └──────────────┘  └──────────────┘  └──────────────┘         │
+│                      FastAPI Backend                            │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐           │
+│  │ LocalEmbedder│  │LocalRetriever│  │  LLM Generator│          │
+│  │ (MPNet-v2)   │  │ (Cosine Sim) │  │ (Mistral-7B)  │          │
+│  └──────────────┘  └──────────────┘  └──────────────┘           │
 └───────────────────────────────┬─────────────────────────────────┘
                                 │
         ┌───────────────────────┼───────────────────────┐
@@ -76,6 +76,15 @@ A **locally-hosted RAG system** that combines the power of Large Language Models
 └────────────────┘   └──────────────────┘   └───────────────────┘
 ```
 
+### End-to-End Request Flow
+
+1. A user submits a prompt in the Next.js UI, which forwards the request to the FastAPI backend over REST.
+2. FastAPI validates and normalizes the text, then invokes the MPNet-v2 local embedder to create the query vector.
+3. The retriever performs cosine-similarity searches across local CSV chunks, Supabase pgvector, and optionally DVC-logged artifacts, merging and deduplicating the combined results.
+4. A context packaging step scores the retrieved snippets, trims them to fit the prompt budget, and assembles the final prompt (system instructions, user query, curated context).
+5. The Mistral-7B generator receives the prompt via its serving layer, streams tokens back to FastAPI, and exposes partial generations for responsiveness.
+6. A post-processing module adds citations, applies optional PII redaction, and returns the formatted answer to the UI while FastAPI logs retrieval and generation metrics.
+
 ### Data Flow:
 
 1. **Ingestion**: PDF → Text Extraction → Chunking → Embeddings → Vector Store
@@ -85,23 +94,23 @@ A **locally-hosted RAG system** that combines the power of Large Language Models
 
 ---
 
-## ✨ Features
+## Features
 
-### 🔍 RAG Pipeline
+### RAG Pipeline
 
 - **Semantic Search**: 768-dimensional embeddings using `all-mpnet-base-v2`
 - **Chunk Retrieval**: Top-5 most relevant text chunks per query
 - **Context Window**: Optimized prompt with retrieved context
 - **Source Attribution**: Page numbers and text excerpts for every answer
 
-### 🤖 Local LLM Processing
+### Local LLM Processing
 
 - **Model**: Mistral-7B-Instruct-v0.2 (4-bit quantized)
 - **Privacy**: 100% local inference - no cloud API calls
 - **Performance**: GPU acceleration (CUDA) for fast generation
 - **Customizable**: Adjustable temperature, max tokens, and prompt templates
 
-### 💬 ChatGPT-Style UI
+### ChatGPT-Style UI
 
 - **Conversational Interface**: Multi-turn conversations with message history
 - **Persistent Storage**: localStorage saves chat history across sessions
@@ -110,21 +119,21 @@ A **locally-hosted RAG system** that combines the power of Large Language Models
 - **Export/Import**: Download/upload chat history as JSON
 - **Responsive Design**: Mobile-friendly centered layout (max-w-3xl)
 
-### 📊 DVC Pipeline
+### DVC Pipeline
 
 - **7 Automated Stages**: Data validation → Ingestion → Chunking → Embedding → Retrieval → Generation → Evaluation
 - **Reproducibility**: Version-controlled datasets and model outputs
 - **Dependency Tracking**: Automatic re-execution on data/code changes
 - **Metrics Logging**: BLEU, ROUGE, and cosine similarity scores
 
-### 🗄️ Dual Storage Options
+### Dual Storage Options
 
 - **Local CSV**: Fast file-based storage for development
 - **Supabase**: Cloud-hosted PostgreSQL with pgvector extension
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Backend
 
@@ -157,7 +166,7 @@ A **locally-hosted RAG system** that combines the power of Large Language Models
 
 ---
 
-## 📦 Prerequisites
+## Prerequisites
 
 ### System Requirements
 
@@ -184,7 +193,7 @@ DVC 3.0+
 
 ---
 
-## 🚀 Installation
+## Installation
 
 ### 1. Clone Repository
 
@@ -286,7 +295,7 @@ AutoTokenizer.from_pretrained('mistralai/Mistral-7B-Instruct-v0.2')
 
 ---
 
-## 🔄 DVC Pipeline
+## DVC Pipeline
 
 ### Pipeline Overview
 
@@ -405,7 +414,7 @@ dvc pull
 
 ---
 
-## 🎮 Usage
+## Usage
 
 ### Starting the Backend
 
@@ -515,7 +524,7 @@ curl -X POST http://localhost:8000/api/query \
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 Healtcare-Rag-APP/
@@ -615,7 +624,7 @@ Healtcare-Rag-APP/
 
 ---
 
-## 📡 API Documentation
+## API Documentation
 
 ### Base URL
 
@@ -687,7 +696,7 @@ Submit a question to the RAG system.
 
 ---
 
-## ⚙️ Configuration
+## Configuration
 
 ### Environment Variables
 
@@ -758,7 +767,7 @@ NEXT_PUBLIC_API_URL=http://127.0.0.1:8000
 
 ---
 
-## 🚢 Deployment
+## Deployment
 
 ### Backend Deployment Options
 
@@ -835,7 +844,7 @@ npm run build
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please follow these steps:
 
@@ -869,13 +878,13 @@ Contributions are welcome! Please follow these steps:
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 📞 Contact & Support
+## Contact & Support
 
 **Project Repository**: [https://github.com/DeepuML/Healtcare-Rag-APP](https://github.com/DeepuML/Healtcare-Rag-APP)
 
@@ -883,7 +892,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - **Hugging Face**: For providing open-source transformer models
 - **Mistral AI**: For the Mistral-7B-Instruct model
@@ -894,7 +903,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## 📊 Performance Metrics
+## Performance Metrics
 
 | Metric                  | Value                   |
 | ----------------------- | ----------------------- |
@@ -908,7 +917,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-## 🗺️ Roadmap
+## Roadmap
 
 - [x] Local RAG pipeline with DVC
 - [x] Supabase vector store integration
@@ -925,4 +934,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Built with ❤️ for Healthcare & Nutrition Education**
+**Built with for Healthcare & Nutrition Education**
