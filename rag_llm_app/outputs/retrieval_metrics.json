@@ -1,0 +1,82 @@
+[
+  {
+    "question": "What are the health benefits of protein?",
+    "top_hits": [
+      {
+        "page": 446,
+        "similarity": 0.6539432406425476,
+        "id": 601
+      },
+      {
+        "page": 465,
+        "similarity": 0.613381564617157,
+        "id": 631
+      },
+      {
+        "page": 435,
+        "similarity": 0.6071664094924927,
+        "id": 585
+      }
+    ]
+  },
+  {
+    "question": "What nutrients should a healthy diet contain?",
+    "top_hits": [
+      {
+        "page": 45,
+        "similarity": 0.6660069823265076,
+        "id": 41
+      },
+      {
+        "page": 72,
+        "similarity": 0.6596697568893433,
+        "id": 80
+      },
+      {
+        "page": 71,
+        "similarity": 0.6541557908058167,
+        "id": 78
+      }
+    ]
+  },
+  {
+    "question": "How much water should people drink daily?",
+    "top_hits": [
+      {
+        "page": 204,
+        "similarity": 0.5891221761703491,
+        "id": 255
+      },
+      {
+        "page": 205,
+        "similarity": 0.5876781940460205,
+        "id": 256
+      },
+      {
+        "page": 203,
+        "similarity": 0.5853865146636963,
+        "id": 254
+      }
+    ]
+  },
+  {
+    "question": "What are carbohydrates and their role in nutrition?",
+    "top_hits": [
+      {
+        "page": 271,
+        "similarity": 0.6851714253425598,
+        "id": 347
+      },
+      {
+        "page": 272,
+        "similarity": 0.6744361519813538,
+        "id": 349
+      },
+      {
+        "page": 294,
+        "similarity": 0.6731115579605103,
+        "id": 381
+      }
+    ]
+  }
+]

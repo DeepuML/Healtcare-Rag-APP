@@ -1,0 +1,145 @@
+schema: '2.0'
+stages:
+  install_dependencies:
+    cmd: pip install -r rag_llm_app/requirements.txt
+    deps:
+    - path: rag_llm_app/requirements.txt
+      hash: md5
+      md5: cf78858cd9d925e7905e24d415f2b248
+      size: 654
+  generate_docs:
+    cmd: python pipeline_helpers.py generate_docs
+    deps:
+    - path: pipeline_helpers.py
+      hash: md5
+      md5: 1e2e3ef17a77b7114843a9ed7e704a1a
+      size: 3914
+    - path: rag_llm_app/app/config/settings.py
+      hash: md5
+      md5: 8d28a96060ecce6a0d26ced7ef7c643b
+      size: 5670
+    outs:
+    - path: outputs/PIPELINE_REPORT.md
+      hash: md5
+      md5: 4cc216ef7e27e510ef4fde82467af7d7
+      size: 938
+  ingest_documents:
+    cmd: python -m app.local_workflow create 
+      data/documents/Human-Nutrition-2020-Edition-1598491699.pdf
+    deps:
+    - path: app/config/settings.py
+      hash: md5
+      md5: 8d28a96060ecce6a0d26ced7ef7c643b
+      size: 5670
+    - path: app/embeddings/local_embedder.py
+      hash: md5
+      md5: 2969def935b5fab72bd416becc818445
+      size: 3310
+    - path: app/ingestion/chunker.py
+      hash: md5
+      md5: 43861356649d1bab630f904d48228c3e
+      size: 4155
+    - path: app/ingestion/loader.py
+      hash: md5
+      md5: c3102afb7f55b2ec3cd2351d1761cf37
+      size: 3524
+    - path: app/local_workflow.py
+      hash: md5
+      md5: e5e52b3cdcfcb1973e6829c65be818b7
+      size: 6914
+    params:
+      ../params.yaml:
+        pdf_path: data/documents/Human-Nutrition-2020-Edition-1598491699.pdf
+    outs:
+    - path: data/documents/text_chunks_and_embeddings_df.csv
+      hash: md5
+      md5: d032db067ebe1281b050fffe83cec292
+      size: 29926963
+  test_retrieval:
+    cmd: python test_retrieval.py
+    deps:
+    - path: app/config/settings.py
+      hash: md5
+      md5: 8d28a96060ecce6a0d26ced7ef7c643b
+      size: 5670
+    - path: app/embeddings/local_embedder.py
+      hash: md5
+      md5: 2969def935b5fab72bd416becc818445
+      size: 3310
+    - path: app/retriever/local_retriever.py
+      hash: md5
+      md5: 4387402faada26744b50683eacbe316e
+      size: 5187
+    - path: data/documents/text_chunks_and_embeddings_df.csv
+      hash: md5
+      md5: d032db067ebe1281b050fffe83cec292
+      size: 29926963
+    - path: test_retrieval.py
+      hash: md5
+      md5: fd1a7281a74b8c5979c3c5dac8314dd1
+      size: 3752
+    outs:
+    - path: outputs/retrieval_test_results.txt
+      hash: md5
+      md5: 51b10452fb7b64682221cd52c8af7a05
+      size: 3379
+  demo_retrieval:
+    cmd: python demo_retrieval.py > ../outputs/demo_results.txt
+    deps:
+    - path: app/embeddings/local_embedder.py
+      hash: md5
+      md5: 2969def935b5fab72bd416becc818445
+      size: 3310
+    - path: app/retriever/local_retriever.py
+      hash: md5
+      md5: 4387402faada26744b50683eacbe316e
+      size: 5187
+    - path: data/documents/text_chunks_and_embeddings_df.csv
+      hash: md5
+      md5: d032db067ebe1281b050fffe83cec292
+      size: 29926963
+    - path: demo_retrieval.py
+      hash: md5
+      md5: 15e8711c5eaf466d8a42bee53554734e
+      size: 3122
+    outs:
+    - path: outputs/demo_results.txt
+      hash: md5
+      md5: 8dc001c2a5da3d2e3c3c18e586d8ca8f
+      size: 4222
+    - path: outputs/retrieval_metrics.json
+      hash: md5
+      md5: 25f55016043b2a64e2917319bcfdc780
+      size: 1637
+  evaluate_pipeline:
+    cmd: python pipeline_helpers.py evaluate_pipeline
+    deps:
+    - path: pipeline_helpers.py
+      hash: md5
+      md5: 1e2e3ef17a77b7114843a9ed7e704a1a
+      size: 3914
+    - path: rag_llm_app/app/embeddings/factory.py
+      hash: md5
+      md5: 69f2beb10e69668783c02e360c3b7007
+      size: 971
+    - path: rag_llm_app/app/llm/factory.py
+      hash: md5
+      md5: 871e0b5739e939f5dc0ef6a627369e2a
+      size: 1009
+    - path: rag_llm_app/app/pipeline/rag_pipeline.py
+      hash: md5
+      md5: 3050d9c6d257fc23bba8ff1a3dfa4eda
+      size: 3639
+    - path: rag_llm_app/app/retriever/factory.py
+      hash: md5
+      md5: a5ab343d74aa34dba96da48a4d0170ad
+      size: 1045
+    - path: rag_llm_app/data/documents/text_chunks_and_embeddings_df.csv
+      hash: md5
+      md5: d032db067ebe1281b050fffe83cec292
+      size: 29926963
+    outs:
+    - path: rag_llm_app/outputs/pipeline_metrics.json
+      hash: md5
+      md5: 426faf797caa01b67df31483baa6b614
+      size: 464

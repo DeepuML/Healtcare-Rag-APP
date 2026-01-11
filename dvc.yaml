@@ -1,0 +1,104 @@
+# DVC Pipeline Configuration for RAG LLM Application
+# This file defines the complete data pipeline from data ingestion to model deployment
+
+stages:
+  # Stage 1: Install Dependencies
+  install_dependencies:
+    cmd: pip install -r rag_llm_app/requirements.txt
+    deps:
+      - rag_llm_app/requirements.txt
+    desc: "Install all required Python packages from requirements.txt"
+
+  # Stage 2: Data Ingestion (PDF to Vector Store)
+  # This stage processes PDF documents and stores them in Supabase
+  ingest_documents:
+    cmd: python -m app.local_workflow create ${pdf_path}
+    wdir: rag_llm_app
+    deps:
+      - app/local_workflow.py
+      - app/ingestion/loader.py
+      - app/ingestion/chunker.py
+      - app/embeddings/local_embedder.py
+      - app/config/settings.py
+    params:
+      - ../params.yaml:
+          - pdf_path
+    outs:
+      - data/documents/text_chunks_and_embeddings_df.csv:
+          cache: true
+          persist: true
+    desc: "Create local embeddings from PDF and save chunks/embeddings to CSV"
+
+  # Stage 4: Test Retrieval System
+  # Verify that the retrieval system is working correctly
+  test_retrieval:
+    cmd: python test_retrieval.py
+    wdir: rag_llm_app
+    deps:
+      - test_retrieval.py
+      - data/documents/text_chunks_and_embeddings_df.csv
+      - app/embeddings/local_embedder.py
+      - app/retriever/local_retriever.py
+      - app/config/settings.py
+    outs:
+      - outputs/retrieval_test_results.txt:
+          cache: false
+    desc: "Test the retrieval system with sample queries (no LLM generation)"
+
+  # Stage 5: Run Retrieval Demo
+  # Demonstrate retrieval capabilities with predefined queries
+  demo_retrieval:
+    cmd: python demo_retrieval.py > ../outputs/demo_results.txt
+    wdir: rag_llm_app
+    deps:
+      - demo_retrieval.py
+      - data/documents/text_chunks_and_embeddings_df.csv
+      - app/embeddings/local_embedder.py
+      - app/retriever/local_retriever.py
+    outs:
+      - outputs/demo_results.txt:
+          cache: false
+    metrics:
+      - outputs/retrieval_metrics.json:
+          cache: false
+    desc: "Run demo queries and generate retrieval results report"
+
+  # Stage 6: Evaluate RAG Pipeline Performance
+  # Measure retrieval quality and response time
+  evaluate_pipeline:
+    cmd: python pipeline_helpers.py evaluate_pipeline
+    deps:
+      - pipeline_helpers.py
+      - rag_llm_app/app/pipeline/rag_pipeline.py
+      - rag_llm_app/app/embeddings/factory.py
+      - rag_llm_app/app/retriever/factory.py
+      - rag_llm_app/app/llm/factory.py
+      - rag_llm_app/data/documents/text_chunks_and_embeddings_df.csv
+    metrics:
+      - rag_llm_app/outputs/pipeline_metrics.json:
+          cache: false
+    desc: "Evaluate end-to-end RAG pipeline performance with metrics"
+
+  # Stage 7: Generate Documentation
+  # Create comprehensive documentation for the pipeline
+  generate_docs:
+    cmd: python pipeline_helpers.py generate_docs
+    deps:
+      - pipeline_helpers.py
+      - rag_llm_app/app/config/settings.py
+    outs:
+      - outputs/PIPELINE_REPORT.md:
+          cache: false
+    desc: "Generate comprehensive pipeline documentation and report"
+
+# Artifacts tracking (optional)
+artifacts:
+  embeddings:
+    path: rag_llm_app/data/documents/text_chunks_and_embeddings_df.csv
+    type: csv
+    desc: "Document chunks with embeddings for RAG retrieval"
+
+  metrics:
+    path: outputs/pipeline_metrics.json
+    type: json
+    desc: "Pipeline performance metrics and evaluation results"

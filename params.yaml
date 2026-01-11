@@ -1,0 +1,47 @@
+# DVC Parameters Configuration
+# Override default values in dvc.yaml by editing this file
+
+# Top-level parameters for ingest_documents stage
+PDF_PATH: "rag_llm_app/data/documents/Human-Nutrition-2020-Edition-1598491699.pdf"
+DOC_ID: "nutrition-v1"
+EMBED_MODEL: "text-embedding-3-small"
+BATCH_EMBED: 100
+BATCH_INSERT: 200
+SENTS_PER_CHUNK: 20
+SENT_OVERLAP: 2
+MAX_TOKENS: 1300
+MIN_TOKENS: 50
+
+# Parameter for process_documents_local stage
+pdf_path: "data/documents/Human-Nutrition-2020-Edition-1598491699.pdf"
+
+# Document Processing Parameters
+document:
+  pdf_path: "rag_llm_app/data/documents/Human-Nutrition-2020-Edition-1598491699.pdf"
+  doc_id: "nutrition-v1"
+
+# Embedding Configuration
+embedding:
+  model: "text-embedding-3-small"
+  batch_size: 100
+
+# Chunking Configuration
+chunking:
+  sentences_per_chunk: 20
+  sentence_overlap: 2
+  max_tokens: 1300
+  min_tokens: 50
+
+# Database Configuration
+database:
+  batch_insert: 200
+
+# Retrieval Configuration
+retrieval:
+  top_k: 5
+  similarity_threshold: 0.7
+
+# Generation Configuration
+generation:
+  temperature: 0.7
+  max_tokens: 512

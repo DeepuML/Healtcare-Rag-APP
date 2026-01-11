@@ -1,0 +1,67 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+rag/
+venv/
+env/
+ENV/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# DVC
+.dvc/tmp/
+.dvc/cache/
+
+# DVC tracked files (these are stored in DVC, not Git)
+/outputs/*.txt
+/outputs/*.json
+/outputs/*.md
+/rag_llm_app/data/documents/*.csv
+/data/ingestion_log.txt
+
+# Logs
+*.log
+logs/
+
+# OS
+Thumbs.db
+
+# Project specific
+human-nutrition-text.pdf
+*.pdf

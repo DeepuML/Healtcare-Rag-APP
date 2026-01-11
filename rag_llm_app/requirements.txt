@@ -1,0 +1,35 @@
+# Core Dependencies
+python-dotenv==1.0.0
+supabase>=2.10.0
+requests==2.31.0
+
+# PDF Processing
+PyMuPDF==1.23.26
+
+# NLP
+spacy==3.7.2
+
+# Utilities
+tqdm==4.66.1
+pandas==2.2.0
+numpy>=1.26.0
+
+# Local Model Support (from notebook) - Python 3.12 compatible
+torch>=2.2.0
+sentence-transformers>=2.5.0
+transformers>=4.36.0
+accelerate>=0.27.0
+bitsandbytes>=0.43.0
+
+# API Support (optional)
+openai>=1.12.0
+
+# Google Gemini API Support (optional, for Gemini backend)
+google-generativeai>=0.3.0
+
+# API (optional, for future FastAPI integration)
+fastapi>=0.109.0
+uvicorn>=0.27.0
+# Testing (optional)
+pytest>=7.0.0
+pytest-asyncio>=0.23.0
