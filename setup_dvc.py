@@ -1,14 +1,42 @@
 #!/usr/bin/env python
 """
-Quick start script to initialize and run the DVC pipeline
+Interactive setup script for the Healthcare RAG DVC pipeline.
+
+Guides the user through the following one-time initialization steps:
+
+1. Verify / install DVC.
+2. Initialize the DVC repository (``dvc init``).
+3. Optionally create a template ``.env`` file.
+4. Create required output directories.
+5. Offer a menu to install dependencies, run the full pipeline, or
+   inspect a single stage.
+
+Run via::
+
+    python setup_dvc.py
+
+or::
+
+    make setup
 """
 import os
 import sys
 import subprocess
 from pathlib import Path
 
-def run_command(cmd, description):
-    """Run a command and print status"""
+def run_command(cmd: str, description: str) -> bool:
+    """
+    Execute a shell command and print a formatted status summary.
+
+    Args:
+        cmd:         Shell command string to execute.
+        description: Human-readable description shown in the header
+                     and used in the success/failure message.
+
+    Returns:
+        ``True`` if the command exited with return-code 0, ``False``
+        otherwise.
+    """
     print(f"\n{'='*60}")
     print(f"🚀 {description}")
     print(f"{'='*60}")
@@ -29,6 +57,13 @@ def run_command(cmd, description):
         return True
     
 def main():
+    """
+    Interactive pipeline-setup wizard.
+
+    Walks through DVC installation, repository initialisation, ``.env``
+    creation, directory scaffolding, and a menu-driven stage selector.
+    Exits with a non-zero code if any required step fails.
+    """
     print("""
     ╔══════════════════════════════════════════════════════════╗
     ║         RAG LLM Application - DVC Pipeline Setup        ║
