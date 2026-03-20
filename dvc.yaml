@@ -29,7 +29,7 @@ stages:
           persist: true
     desc: "Create local embeddings from PDF and save chunks/embeddings to CSV"
 
-  # Stage 4: Test Retrieval System
+  # Stage 3: Test Retrieval System
   # Verify that the retrieval system is working correctly
   test_retrieval:
     cmd: python test_retrieval.py
@@ -45,7 +45,7 @@ stages:
           cache: false
     desc: "Test the retrieval system with sample queries (no LLM generation)"
 
-  # Stage 5: Run Retrieval Demo
+  # Stage 4: Run Retrieval Demo
   # Demonstrate retrieval capabilities with predefined queries
   demo_retrieval:
     cmd: python demo_retrieval.py > ../outputs/demo_results.txt
@@ -63,7 +63,7 @@ stages:
           cache: false
     desc: "Run demo queries and generate retrieval results report"
 
-  # Stage 6: Evaluate RAG Pipeline Performance
+  # Stage 5: Evaluate RAG Pipeline Performance
   # Measure retrieval quality and response time
   evaluate_pipeline:
     cmd: python pipeline_helpers.py evaluate_pipeline
@@ -79,7 +79,7 @@ stages:
           cache: false
     desc: "Evaluate end-to-end RAG pipeline performance with metrics"
 
-  # Stage 7: Generate Documentation
+  # Stage 6: Generate Documentation
   # Create comprehensive documentation for the pipeline
   generate_docs:
     cmd: python pipeline_helpers.py generate_docs

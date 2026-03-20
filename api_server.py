@@ -1,5 +1,19 @@
-"""FastAPI server for RAG pipeline"""
+"""
+FastAPI server for the Healthcare RAG pipeline.
 
+Exposes a REST API consumed by the Next.js frontend.  On startup the
+server loads pre-computed chunk embeddings from a CSV file, initialises
+the local embedding model and LLM, and makes them available to the
+query endpoint.
+
+Endpoints:
+    GET  /         - Basic info about the server.
+    GET  /health   - Liveness / readiness check.
+    POST /api/query - Accept a natural-language question and return a
+                      RAG-generated answer with source citations.
+"""
+
+import ast
 import sys
 import time
 from pathlib import Path
@@ -72,10 +86,12 @@ async def startup_event():
         chunks_df = pd.read_csv(csv_path)
         logger.info(f"Loaded {len(chunks_df)} chunks")
         
-        # Convert embeddings from string representation to numpy arrays
+        # Convert embeddings from string representation to numpy arrays.
+        # ast.literal_eval is used instead of eval() to safely parse the
+        # stored list literals without executing arbitrary code.
         embeddings_list = []
         for emb_str in chunks_df['embedding']:
-            emb_array = np.array(eval(emb_str))
+            emb_array = np.array(ast.literal_eval(emb_str))
             embeddings_list.append(emb_array)
         
         embeddings_tensor = torch.tensor(
